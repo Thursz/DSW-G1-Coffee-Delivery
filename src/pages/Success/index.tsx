@@ -9,11 +9,13 @@ export function Success() {
   const { orders } = useCart()
   const { orderId } = useParams()
   const orderInfo = orders.find((order) => order.id === Number(orderId))
+
   const paymentMethod = {
     credit: 'Cartão de crédito',
     debit: 'Cartão de débito',
     cash: 'Dinheiro',
   }
+  
   const theme = useTheme()
 
   if (!orderInfo?.id) {

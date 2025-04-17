@@ -29,13 +29,21 @@ type CoffeeCardProps = {
   handleFavoriteCoffee: (id: string) => void
 }
 
-export function CoffeeCard({ coffee, incrementQuantity, decrementQuantity }: CoffeeCardProps) {
+export function CoffeeCard({ coffee, incrementQuantity, decrementQuantity}: CoffeeCardProps) {
   const theme = useTheme();
-  /**
+   /**
    * Cor brancoa do coração quando o café não é favorito: theme.colors['base-card']
    * Cor vermelha do coração quando o café é favorito: "red" 
    * **/
-
+  function handleFavoriteCoffee(){
+    const updateCoffee = {
+      ...coffee,
+      favorite: true
+    };
+    updateCoffee
+    console.log("Adicionando", updateCoffee.id);
+  }
+  
   return (
     <Container>
       <CoffeeImg src={"/images/coffees/expresso-cremoso.png"} alt="Expresso Tradicional" />
@@ -61,11 +69,12 @@ export function CoffeeCard({ coffee, incrementQuantity, decrementQuantity }: Cof
             decrementQuantity={() => decrementQuantity(coffee.id)}
           />
 
-          <button onClick={() => {}}>
-            <Heart size={22}  color={theme.colors['base-card']} />
+          <button onClick ={() => handleFavoriteCoffee()}>
+            <Heart size={22}  color={!coffee.favorite ? theme.colors['base-card'] : "red"} />
           </button>
         </Order>
       </Control>
     </Container>
-  )
+  ) 
 }
+

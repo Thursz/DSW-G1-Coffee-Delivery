@@ -23,6 +23,8 @@ import {
 import { Tags } from '../../components/CoffeeCard/styles';
 import { QuantityInput } from '../../components/Form/QuantityInput';
 import { Radio } from '../../components/Form/Radio';
+import { useNavigate } from 'react-router-dom';
+import { boolean } from 'zod';
 
 export interface Item {
   id: string
@@ -30,7 +32,8 @@ export interface Item {
 }
 export interface Order {
   id: number
-  items: CoffeeInCart[]
+  items: CoffeeInCart[];
+  paymentMethod: 'credit' | 'debit' | 'cash';
 }
 
 interface CoffeeInCart {
@@ -79,6 +82,12 @@ export function Cart() {
       subTotal: 49.50,
     }
   ]);
+  const [paymentMethod, setPaymentMethod] = useState<'credit' | 'debit' | 'cash' | ''>('');
+
+  const navigate = useNavigate();
+  const [Orders, setOrders] = useState<Order[]>([]);
+  const [, setShowError] = useState(false);
+
 
   const amountTags: string[] = [];
   
@@ -133,6 +142,24 @@ export function Cart() {
     )
   }
 
+  
+  function handleFinishOrder() {
+    if (!paymentMethod) {
+      setShowError(true);
+      return;
+    }
+
+    const newOrder: Order = {
+      id: new Date().getTime(),
+      items: coffeesInCart,
+      paymentMethod,
+    };
+
+    setOrders(prev => [...prev, newOrder]);
+    setCoffeesInCart([]);
+    navigate(`/success`, { state: newOrder });
+  }
+
   return (
     <Container>
       
@@ -155,8 +182,8 @@ export function Cart() {
             <PaymentOptions>
               <div>
                 <Radio
-                  isSelected={false}
-                  onClick={() => {}}
+                  isSelected={paymentMethod === 'credit'}
+                  onClick={() => setPaymentMethod('credit')}
                   value="credit"
                 >
                   <CreditCard size={16} />
@@ -164,8 +191,8 @@ export function Cart() {
                 </Radio>
 
                 <Radio
-                  isSelected={false}
-                  onClick={() => {}}
+                  isSelected={paymentMethod === 'debit'}
+                  onClick={() => setPaymentMethod('debit')}
                   value="debit"
                 >
                   <Bank size={16} />
@@ -173,8 +200,8 @@ export function Cart() {
                 </Radio>
 
                 <Radio
-                  isSelected={true}
-                  onClick={() => {}}
+                  isSelected={paymentMethod === 'cash'}
+                  onClick={() =>  setPaymentMethod('cash')}
                   value="cash"
                 >
                   <Money size={16} />
@@ -263,12 +290,12 @@ export function Cart() {
             </div>
           </CartTotalInfo>
 
-          <CheckoutButton type="submit" form="order">
+          <CheckoutButton onClick={handleFinishOrder}>
             Confirmar pedido
           </CheckoutButton>
         </CartTotal>
       </InfoContainer>
-      {/* <Success /> */}
+      {/* <Success /> */} 
     </Container>
   )
 }

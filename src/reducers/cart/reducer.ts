@@ -8,6 +8,7 @@ export interface Item {
 }
 
 export interface Order extends OrderInfo {
+  paymentMethod: any
   id: number
   items: Item[]
 }
